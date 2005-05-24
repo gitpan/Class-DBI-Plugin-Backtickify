@@ -3,7 +3,9 @@ package Class::DBI::Plugin::Backtickify;
 use warnings;
 use strict;
 
-our $VERSION = 0.01;
+use Class::ISA;
+
+our $VERSION = 0.02;
 
 =head1 NAME
 
@@ -42,10 +44,6 @@ sub import
     my ( $class ) = @_;
     
     my $caller = caller( 0 );
-    
-    $caller->can( '__backtickify_caller' ) || $caller->mk_classdata( '__backtickify_caller' );
-    
-    $caller->__backtickify_caller( $caller );
     
     no strict 'refs';
     *{"$caller\::transform_sql"} = \&transform_sql;
@@ -125,17 +123,13 @@ sub transform_sql
     }
     
     # nasty hack
-    #package Class::DBI;
-    #return $self->SUPER::transform_sql($sql => @args);
-
-    # alternative nasty hack    
-    my $owner = $self->__backtickify_caller;
+    my $super = ( Class::ISA::super_path( ref( $self ) || $self ) )[0];
     
     my $eval = '{ package %s; $self->SUPER::transform_sql( q(%s), ';
     $eval .= 'q(%s), ' for @args;
     $eval .= ') }';
     
-    my $return = eval sprintf $eval, $owner, $sql, @args;
+    my $return = eval sprintf $eval, $super, $sql, @args;
     
     die $@ if $@;
     

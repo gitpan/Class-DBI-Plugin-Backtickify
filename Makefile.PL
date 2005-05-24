@@ -6,6 +6,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/Class/DBI/Plugin/Backtickify.pm',
           'PREREQ_PM' => {
                            'Class::DBI' => '0',
+                           'Class::ISA' => '0',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',

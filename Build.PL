@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     requires => {
         'Test::More' => 0,
         'Class::DBI' => 0,  # for tests
+        'Class::ISA' => 0,
     },
     add_to_cleanup      => [ 'Class-DBI-Plugin-Backtickify-*' ],
     create_makefile_pl  => 'traditional',
